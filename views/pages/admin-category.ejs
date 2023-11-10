@@ -1,0 +1,153 @@
+<body>
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Top navbar -->
+    <div><%- include('../partials/admin/navbar'); %></div>
+    <%- include('../partials/admin/header'); %>
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <!-- Table -->
+      <div class="row">
+        <div class="col">
+          <div class="card shadow">
+            <div class="card-header border-0">
+              <h3 class="mb-0">All Categories</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% category.forEach(function({name,_id}){ %>
+                  <div
+                    class="modal fade"
+                    id="<%= name %>"
+                    data-bs-backdrop="static"
+                    data-bs-keyboard="false"
+                    tabindex="-1"
+                    aria-labelledby="staticBackdropLabel"
+                    aria-hidden="true"
+                  >
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1
+                            class="modal-title fs-5"
+                            id="staticBackdrsopLabel"
+                          >
+                            Edit Category
+                          </h1>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <form method="post" action="/api/category/<%= _id %>">
+                            <div class="mb-3">
+                              <label class="form-label">Name</label>
+                              <input
+                                required
+                                type="text"
+                                class="form-control text-dark"
+                                name="name"
+                                value="<%= name %>"
+                              />
+                            </div>
+
+                            <div class="modal-footer">
+                              <button
+                                type="reset"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                              >
+                                Close
+                              </button>
+                              <button type="submit" class="btn btn-primary">
+                                Update
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <tr>
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <div class="media-body">
+                          <span class="mb-0 text-sm"><%= name %></span>
+                        </div>
+                      </div>
+                    </th>
+                    <td class="text-right">
+                      <div class="dropdown">
+                        <a
+                          class="btn btn-sm btn-icon-only text-light"
+                          href="#"
+                          role="button"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <div
+                          class="dropdown-menu dropdown-menu-right dropdown-menu-arrow"
+                        >
+                          <a
+                            data-bs-toggle="modal"
+                            data-bs-target="#<%= name %>"
+                            class="dropdown-item"
+                            href="#"
+                            >Edit</a
+                          >
+                          <a
+                            class="dropdown-item delete-category"
+                            href="#"
+                            data-id="<%= _id %>"
+                            >Delete</a
+                          >
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  document.querySelectorAll(".delete-category").forEach((link) => {
+    link.addEventListener("click", async function (event) {
+      event.preventDefault(); // Prevent the default behavior of the anchor link
+
+      const id = link.getAttribute("data-id");
+
+      try {
+        const response = await fetch(`/api/category/${id}`, {
+          method: "DELETE",
+        });
+
+        if (response.status === 200) {
+          window.location.reload();
+        } else {
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  });
+</script>
